@@ -171,9 +171,17 @@ use HeadlessChromium\BrowserFactory;
 
             if(gettype($dom) !== 'boolean'){
 
-                $change_date = $dom->find('.rapport__list', 1)->find('dd', 0)->text();
+                $change_date = $dom->find('.rapport__list', 1);
+                if($change_date)
+                    $change_date = $change_date->find('dd', 0)->plaintext;
+                else
+                    $change_date = '';
 
-                $pnr = $dom->find('.rapport__pnr', 0)->find('span', 0)->text();
+                $pnr = $dom->find('.rapport__pnr', 0);
+                if($pnr)
+                    $pnr = $pnr->find('span', 0)->plaintext;
+                else
+                    $pnr = '';
                 
             }
             else{
