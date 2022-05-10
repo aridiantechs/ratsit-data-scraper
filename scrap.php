@@ -26,10 +26,10 @@ use HeadlessChromium\BrowserFactory;
             CURLOPT_CONNECTTIMEOUT => 120,      // timeout on connect
             CURLOPT_TIMEOUT        => 120,      // timeout on response
             CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
-            // CURLOPT_PROXY          => 'zproxy.lum-superproxy.io',
-            // CURLOPT_PROXYPORT      => '22225',
-            // CURLOPT_PROXYUSERPWD   => 'lum-customer-hl_fa848026-zone-daniel_sahlin_zone-country-se:0xwx5ytxlfcc',
-            // CURLOPT_HTTPPROXYTUNNEL=> 1,
+            CURLOPT_PROXY          => 'zproxy.lum-superproxy.io',
+            CURLOPT_PROXYPORT      => '22225',
+            CURLOPT_PROXYUSERPWD   => 'lum-customer-hl_fa848026-zone-daniel_sahlin_zone-country-se:0xwx5ytxlfcc',
+            CURLOPT_HTTPPROXYTUNNEL=> 1,
         );
         
         $ch      = curl_init( $url );
@@ -171,9 +171,18 @@ use HeadlessChromium\BrowserFactory;
 
             if(gettype($dom) !== 'boolean'){
 
-                $change_date = $dom->find('.rapport__list', 1)->find('dd', 0)->plaintext;
+                $change_date = $dom->find('.rapport__list', 1);
+                
+                if(!is_null($change_date) || !empty($change_date))
+                    $change_date = $change_date->find('dd', 0)->plaintext;
+                else
+                    $change_date = '';
 
-                $pnr = $dom->find('.rapport__pnr', 0)->find('span', 0)->plaintext;
+                $pnr = $dom->find('.rapport__pnr', 0);
+                if(!is_null($pnr) || !empty($pnr))
+                    $pnr = $pnr->find('span', 0)->plaintext;
+                else
+                    $pnr = '';
                                 
             }
             else{
