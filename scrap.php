@@ -302,7 +302,7 @@ use HeadlessChromium\BrowserFactory;
 
 
         foreach(array_unique($addresses) as $key => $address){
-            if ($key < 15752)
+            if ($key < 28476)
                 continue;
             getData($address, $key, $file_name);
         }
