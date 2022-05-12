@@ -255,33 +255,33 @@ use HeadlessChromium\BrowserFactory;
 
     function handleFailedAddresses($dom, $html, $key, $address){
 
-        foreach($dom->find('.h2') as $element){
+        // foreach($dom->find('.h2') as $element){
             
-            if($element == '<h2 class="h2"> Ingen träff </h2>'){
-                createLog($key,$address,'Address not found');
-                return;
-            }
+        //     if($element == '<h2 class="h2"> Ingen träff </h2>'){
+        //         createLog($key,$address,'Address not found');
+        //         return;
+        //     }
 
-        }
+        // }
 
-        $dom = new DomQuery($html);
-        if($dom->find('h1') == '<h1 data-translate="turn_on_js" style="color:#bd2426;">Please turn JavaScript on and reload the page.</h1><h1><span data-translate="checking_browser">Checking your browser before accessing</span> merinfo.se.</h1>'){
+        // $dom = new DomQuery($html);
+        // if($dom->find('h1') == '<h1 data-translate="turn_on_js" style="color:#bd2426;">Please turn JavaScript on and reload the page.</h1><h1><span data-translate="checking_browser">Checking your browser before accessing</span> merinfo.se.</h1>'){
             
-            createLog($key,$address,'Javascript error');
-            return;
+        //     createLog($key,$address,'Javascript error');
+        //     return;
 
-        }
-        else if($dom->find('a') == '<a rel="noopener noreferrer" href="https://www.cloudflare.com/5xx-error-landing/" target="_blank">Cloudflare</a>'){
+        // }
+        // else if($dom->find('a') == '<a rel="noopener noreferrer" href="https://www.cloudflare.com/5xx-error-landing/" target="_blank">Cloudflare</a>'){
 
-            createLog($key,$address,'Cloudflare error');
-            return;
+        //     createLog($key,$address,'Cloudflare error');
+        //     return;
             
-        }
-        else{
+        // }
+        // else{
 
             createLog($key,$address,'Unknown Error');
 
-        }
+        // }
 
     }
 
