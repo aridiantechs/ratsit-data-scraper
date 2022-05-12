@@ -289,9 +289,9 @@ use HeadlessChromium\BrowserFactory;
         
         $file_name = "final";
         
-        $file = fopen('uploads/'.$file_name.'.txt', "w");
+        // $file = fopen('uploads/'.$file_name.'.txt', "w");
         
-        fclose($file);
+        // fclose($file);
 
         $file_addresses = fopen("source/input.txt", "r") or die("Unable to open file!");
 
@@ -301,7 +301,10 @@ use HeadlessChromium\BrowserFactory;
             $addresses[] = $line;
 
 
-        foreach(array_unique($addresses) as $key => $address)
+        foreach(array_unique($addresses) as $key => $address){
+            if ($key < 13973)
+                continue;
             getData($address, $key, $file_name);
+        }
 
     }
