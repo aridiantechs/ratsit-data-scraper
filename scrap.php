@@ -293,7 +293,7 @@ use HeadlessChromium\BrowserFactory;
         
         // fclose($file);
 
-        $file_addresses = fopen("source/input.txt", "r") or die("Unable to open file!");
+        $file_addresses = fopen("source/input2.txt", "r") or die("Unable to open file!");
 
         $addresses = [];
 
@@ -302,8 +302,8 @@ use HeadlessChromium\BrowserFactory;
 
 
         foreach(array_unique($addresses) as $key => $address){
-            if ($key < 28476)
-                continue;
+            // if ($key < 28476)
+            //     continue;
             getData($address, $key, $file_name);
         }
 
