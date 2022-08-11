@@ -1,6 +1,8 @@
 <?php
 
 error_reporting(E_ALL);
+ini_set('max_execution_time', 0);
+ini_set('memory_limit', -1);
 
 include_once('simple_html_dom.php');
 require_once (__DIR__ . '/vendor/autoload.php');
@@ -28,7 +30,7 @@ use HeadlessChromium\BrowserFactory;
             CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
             CURLOPT_PROXY          => 'zproxy.lum-superproxy.io',
             CURLOPT_PROXYPORT      => '22225',
-            CURLOPT_PROXYUSERPWD   => 'lum-customer-hl_fa848026-zone-daniel_sahlin_zone-country-se:0xwx5ytxlfcc',
+            CURLOPT_PROXYUSERPWD   => 'lum-customer-hl_fa848026-zone-daniel_sahlin_zone:0xwx5ytxlfcc',
             CURLOPT_HTTPPROXYTUNNEL=> 1,
         );
         
@@ -70,10 +72,10 @@ use HeadlessChromium\BrowserFactory;
             // CURLOPT_PROXYPORT      => '22225',
             // CURLOPT_PROXYUSERPWD   => 'lum-customer-hl_fa848026-zone-daniel_sahlin_zone:0xwx5ytxlfcc',
             // CURLOPT_HTTPPROXYTUNNEL=> 1,
-            // CURLOPT_HTTPHEADER     => array(
-            //                             'origin: https://www.ratsit.se',
-            //                             'Content-Type: application/json',
-            //                         ),
+            CURLOPT_HTTPHEADER     => array(
+                                        'origin: https://www.ratsit.se',
+                                        'Content-Type: application/json',
+                                    ),
 
         );
         
@@ -100,11 +102,11 @@ use HeadlessChromium\BrowserFactory;
         else{
             return false;
         }
-        
     }
 
 
-    function headLessRequest($url){
+    function headLessRequest($url)
+    {
 
         $browserCommand = 'google-chrome';
 
@@ -144,7 +146,7 @@ use HeadlessChromium\BrowserFactory;
         $url = 'https://www.ratsit.se/api/search/person?vem='.$address.'&var=&m=1&k=1&r=1&er=1&b=1&eb=1&amin=16&amax=120&fon=1&typ=1&page=1';
 
         $result = getDataWithAPI($url);
-        
+
         $first_name = $last_name = $address = $age = $postort = $post = $details = $change_date = $pnr = '';
 
         if($result){
@@ -156,9 +158,9 @@ use HeadlessChromium\BrowserFactory;
             
             $last_name = $result['lastNameComplete'];
             $address     = $result['address'];
-            $age         = $result['age'];
-            $postort     = $result['postort'];
-            $post        = $result['postNr'];
+            // $age         = $result['age'];
+            // $postort     = $result['postort'];
+            // $post        = $result['postNr'];
             $details_url = $result['personrapportUrl'];
 
 
@@ -171,12 +173,22 @@ use HeadlessChromium\BrowserFactory;
 
             if(gettype($dom) !== 'boolean'){
 
-                $change_date = $dom->find('.rapport__list', 1);
+                $check_date  = $dom->find('.rapport__list', 1);
+
+                if(!is_null($check_date) || !empty($check_date)){
+
+                    if($dom->find('.rapport__list', 1)->find('dt', 0)->plaintext == 'Adressändring'){
+
+                        $change_date = $dom->find('.rapport__list', 1);
+                        
+                        if(!is_null($change_date) || !empty($change_date))
+                            $change_date = $change_date->find('dd', 0)->plaintext;
+                        else
+                            $change_date = '';
+                    }
                 
-                if(!is_null($change_date) || !empty($change_date))
-                    $change_date = $change_date->find('dd', 0)->plaintext;
-                else
-                    $change_date = '';
+                }
+
 
                 $pnr = $dom->find('.rapport__pnr', 0);
                 if(!is_null($pnr) || !empty($pnr))
@@ -202,15 +214,18 @@ use HeadlessChromium\BrowserFactory;
         }
         else{
 
+
+
             if(1){
+
                 $myfile = fopen('./uploads/'.$file_name.'.txt', "a") or die("Unable to open file!");
                 $txt =  trim($original_input)     . "\t" .
                         trim($first_name)     . "\t" . 
                         trim($last_name)      . "\t". 
                         trim($address)  . "\t". 
-                        trim($age)   . "\t". 
-                        trim($postort)     . "\t". 
-                        trim($post)   . "\t". 
+                        // trim($age)   . "\t". 
+                        // trim($postort)     . "\t". 
+                        // trim($post)   . "\t". 
                         trim($pnr)   . "\t". 
                         trim($change_date);
 
@@ -255,45 +270,28 @@ use HeadlessChromium\BrowserFactory;
 
     function handleFailedAddresses($dom, $html, $key, $address){
 
-        // foreach($dom->find('.h2') as $element){
-            
-        //     if($element == '<h2 class="h2"> Ingen träff </h2>'){
-        //         createLog($key,$address,'Address not found');
-        //         return;
-        //     }
-
-        // }
-
-        // $dom = new DomQuery($html);
-        // if($dom->find('h1') == '<h1 data-translate="turn_on_js" style="color:#bd2426;">Please turn JavaScript on and reload the page.</h1><h1><span data-translate="checking_browser">Checking your browser before accessing</span> merinfo.se.</h1>'){
-            
-        //     createLog($key,$address,'Javascript error');
-        //     return;
-
-        // }
-        // else if($dom->find('a') == '<a rel="noopener noreferrer" href="https://www.cloudflare.com/5xx-error-landing/" target="_blank">Cloudflare</a>'){
-
-        //     createLog($key,$address,'Cloudflare error');
-        //     return;
-            
-        // }
-        // else{
-
             createLog($key,$address,'Unknown Error');
-
-        // }
 
     }
 
     if (1) {
         
         $file_name = "final";
-        
-        // $file = fopen('uploads/'.$file_name.'.txt', "w");
-        
-        // fclose($file);
+        $file = fopen('uploads/'.$file_name.'.txt', "w");
+        fclose($file);
 
-        $file_addresses = fopen("source/input.txt", "r") or die("Unable to open file!");
+        $input_file_name = php_uname('n');
+
+        if($input_file_name == 'DESKTOP-AJFT9FC')
+            $file_addresses = fopen("source/source-multiple/input2.txt", "r") or die("Unable to open file!");
+        
+        else{
+        
+            $input_file_name = 'source/' . $input_file_name . '.txt';
+            $file_addresses = fopen($input_file_name, "r") or die("Unable to open file!");
+        
+        }
+
 
         $addresses = [];
 
@@ -302,8 +300,6 @@ use HeadlessChromium\BrowserFactory;
 
 
         foreach(array_unique($addresses) as $key => $address){
-            if ($key < 28476)
-                continue;
             getData($address, $key, $file_name);
         }
 
